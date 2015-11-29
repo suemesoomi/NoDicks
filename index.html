@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name = "viewport" content = "width = device-width, minimum-scale = 1.0, maximum-scale = 1.0, user-scalable = no">
+<link rel="stylesheet" type="text/css" href="css/decorate.css"/>
+
+
+<div id="uploadScreen">
+  <input id="photoInput" type="file" accept="image/*">
+</div>
+
+<div id="decorateScreen">
+  
+  <div id="photo"> </div>
+  <canvas id="cropShape"></canvas>  
+  <div id="stampContainer"></div>
+  <canvas id="canvas"></canvas>
+  
+  <div id="tools">
+    <div id="toolButtons">
+      <div class = "buttons" id="cropButton">Crop</div>
+      <div class = "buttons" id="adjustButton">Adjust</div>
+      <div class = "buttons" id="stampButton">Stamp</div>
+      <div class = "buttons" id="drawButton">Draw</div>
+      <div class = "buttons" id="bgButton">Bg</div>
+    </div>
+    <div id="crop"> 
+      <div id="cropDone"> Done </div>
+    </div>
+    <div id="stamps">
+      <div id="stampCategories">
+        <div class = "buttons" data-set-class="hair">Hair</div>
+        <div class = "buttons" data-set-class="hats">Hats</div>
+        <div class = "buttons" data-set-class="dress">Dress</div>
+        <div class = "buttons" data-set-class="face">Face</div>
+        <div class = "buttons" data-set-class="access">Access</div>
+      </div>
+      <div id="buttonSwitcher">
+        <div id="hairButtons"> 
+          <img src="img/hair_60-black.png" class="hairButtons"/>
+          <img src="img/hair_beehive-black.png" class="hairButtons"/>
+        </div>     
+        <div id="hatsButtons"> 
+          <img src="img/hat_sun.png" class="hatButtons" id="hatSun_Button"/>
+          <img src="img/hat_catears.png" class="hatButtons" id="hatCat_Button"/>
+        </div>
+        <div id="dressButtons" >
+          <img src="img/dress_coat.png" class="dressButtons" id="dressCoat_Button"/>
+          <img src="img/dress_dress.png" class="dressButtons"/>
+          <img src="img/dress_hoodie.png" class="dressButtons"/>
+          <img src="img/dress_jacket.png" class="dressButtons"/>
+          <img src="img/dress_pants.png" class="dressButtons"/>
+          <img src="img/dress_shorts.png" class="dressButtons"/>
+          <img src="img/dress_shortShorts.png" class="dressButtons"/>
+          <img src="img/dress_skirt.png" class="dressButtons"/>
+          <img src="img/dress_skort.png" class="dressButtons"/>
+          <img src="img/dress_sweater.png" class="dressButtons"/>
+          <img src="img/dress_tank.png" class="dressButtons"/>
+          <img src="img/dress_tie.png" class="dressButtons"/>
+          <img src="img/dress_tshirt.png" class="dressButtons"/>
+        </div>
+        <div id="faceButtons"> </div>
+        <div id="accessButtons"> </div>
+      </div>
+    </div>
+    <div id="stampAdjust">
+      <div id="delete">Delete</div>
+    </div>
+    <div id="draw">
+      <div id="eraser">Eraser</div>
+    <!--  <label for ="brushSize">Size</label>-->
+      <input id="brushSize" type = "range" name ="brushSize" min="1" max="30" value ="15">
+    <!--  <label for ="hue">Hue</label>-->
+      <input id="hue" type = "range" name ="hue" min="0" max="360" value ="20">
+      <div id="previewSlider"></div>
+     </div>
+    
+  </div>
+</div>  
+
+<script src="js/jquery-2.1.4.min.js"></script>
+<script src="js/load-image.all.min.js"></script>
+<script src="js/hammer.min.js"></script>
+<script src="js/jquery.hammer.js"></script>
+<script src="js/stamp.js"></script>
+<script src="js/draw.js"></script>
+<script src="js/fastclick.js"></script>  
+  
+  
+<script>
+  
+  var canvas = document.getElementById('canvas'),
+      context = canvas.getContext('2d');
+
+  document.documentElement.offsetWidth; //force layout
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  context.rect(0,0,canvas.width, canvas.height);
+  
+  draw();
+  
+  Origami.fastclick(document.body);
+  
+//TOOL BUTTONS  
+  $("#drawButton").click(function(){
+    $("#canvas").css("pointer-events","");
+    $("#tools").removeClass().addClass("draw");
+    $("#cropOverlay").removeClass("active");
+    $("#draw").addClass('active');
+    $("#tools").css("height","100px");
+  });
+  $("#stampButton").click(function(){
+    $("#canvas").css("pointer-events","none");
+    $("#draw").removeClass('active');
+    $("#cropOverlay").removeClass("active");
+    $("#tools").removeClass().addClass("stamp");
+    $("#tools").css("height","150px");  
+  });
+  $("#cropButton").click(function(){ 
+    $("#canvas").css("pointer-events","none");
+    $("#draw").removeClass('active');
+    $("#tools").removeClass().addClass("crop");
+    $("#cropOverlay").addClass("active");
+    $("#tools").css("height","100px");
+    cropHammer();
+  });
+//CROP
+  var cropShape = new Image();
+  cropShape.src = "img/cropSourceAtop.png";
+  
+  var startRotation = 0;
+  var rotation = 0;
+  var startScale = 1;
+  var scale = 0;
+  var startX = 0;
+  var startY = 0;
+  var x = 0;
+  var y = 0;
+  function cropHammer(){
+    var $crop = $("#cropOverlay");
+    $crop.hammer();
+    $crop.data("hammer").get("rotate").set({enable:true});
+    $crop.data("hammer").get("pinch").set({enable:true});
+    
+    $crop.bind("rotate", "pinch", function(e){
+      rotation = e.gesture.rotation + startRotation;
+      scale = e.gesture.scale-1 + startScale;
+      x = startX + e.gesture.deltaX;
+      y = startY + e.gesture.deltaY;
+
+      $("#photo").css({
+         "transform": "translate("+x+"px,"+y+"px) rotate("+rotation+"deg) scale("+scale+","+scale+")",
+          "-webkit-transform": "translate("+x+"px,"+y+"px) rotate("+rotation+"deg) scale("+scale+","+scale+")"
+      });
+    });
+    $crop.bind("rotateend", "pinchend", function(e){
+        startRotation = rotation;
+        startScale = scale;
+        startX = x;
+        startY = y;
+      });
+    $crop.bind("pan", function(e){
+        x = startX + e.gesture.deltaX;
+        y = startY + e.gesture.deltaY;
+
+        $("#photo").css({
+          "transform": "translate("+x+"px,"+y+"px) rotate("+startRotation+"deg) scale("+startScale+","+startScale+")",
+          "-webkit-transform": "translate("+x+"px,"+y+"px) rotate("+startRotation+"deg) scale("+startScale+","+startScale+")"  
+        });
+      });
+    $crop.bind("panend", function(e){
+      startX = startX+e.gesture.deltaX;
+      startY = startY+e.gesture.deltaY;
+  });
+  }
+  
+  $("#cropDone").click(function(){
+    $("#cropShape").addClass('active');
+    
+    var canvasCrop = document.getElementById('cropShape'),
+        contextCrop = canvasCrop.getContext('2d');
+    canvasCrop.width = canvas.width;
+    canvasCrop.height = canvas.height;
+    var cropShapeScale = canvasCrop.height/cropShape.height;
+    var cropShapeX;
+    
+    contextCrop.save();    
+    var x = (canvasCrop.width/2 - (canvasPhoto.width*startScale)/2) + startX;
+    var y = (canvasCrop.height/2 - (canvasPhoto.height*startScale)/2) + startY;
+    contextCrop.translate(x, y);
+    contextCrop.scale(startScale, startScale);
+    contextCrop.translate(canvasPhoto.width/2, canvasPhoto.height/2);
+    contextCrop.rotate(startRotation*Math.PI/180);
+    contextCrop.translate(-canvasPhoto.width/2, -canvasPhoto.height/2);
+    contextCrop.drawImage(canvasPhoto,0,0);
+    contextCrop.restore();
+    contextCrop.globalCompositeOperation="destination-in";
+    contextCrop.drawImage(cropShape,((canvasCrop.width/2)-((cropShape.width*cropShapeScale)/2)), 0, (cropShape.width*cropShapeScale), canvasCrop.height);
+    
+    $("#stampButton").click();
+    $("#photo").css("display", "none");
+  });
+  
+//STAMP BUTTONS  
+  $("#stampCategories .buttons").click(function(){
+    var className = $(this).data('set-class');
+    $("#buttonSwitcher").removeClass().addClass(className);
+  });
+  
+  stamp();
+  
+//INSERT PHOTO & CREATE CANVAS CALLED PHOTO
+  var $photoInput = $("#photoInput");
+  document.body.className="uploadScreen";
+  var canvasPhoto;
+  //when we get a photo input, 'change' screen and make canvas named photo with photo
+  $photoInput.change(function(){
+    document.body.className="decorateScreen";
+    loadImage.parseMetaData( //read metadata
+      $photoInput[0].files[0],
+      function (metaData) {
+        loadImage(
+          $photoInput[0].files[0],
+          function (photo){
+            $(photo).appendTo("#photo");
+            canvasPhoto = photo;
+          },
+          {orientation: metaData.exif && metaData.exif.get('Orientation'), 
+           maxWidth: canvas.width, 
+           maxHeight: canvas.height, 
+//           cover: true,
+           contain: true,
+           crop: true} 
+        );
+      }
+    );
+    $("#tools").removeClass().addClass("crop");
+    $("#buttonSwitcher").addClass("hair");
+    $("#canvas").css("pointer-events","none");
+    var $cropOverlay = $('<div>', {
+      id: "cropOverlay",
+      height: canvas.height,
+      width: canvas.width
+    }).insertAfter("#photo");
+    $("#cropOverlay").addClass("active");
+    cropHammer();
+  });
+
+</script>

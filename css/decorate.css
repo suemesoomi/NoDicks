@@ -1,0 +1,147 @@
+html {
+  height:100%;
+}
+body{
+  margin:0;
+  position:relative;
+  height: 100%;
+  overflow:hidden;
+}
+body:not(.uploadScreen) #uploadScreen{
+  display: none;
+}
+body:not(.decorateScreen) #decorateScreen{
+  display: none;
+}
+#photo{
+  position: fixed;
+  left: 0;
+  top: 0;
+}
+#canvas{
+  position: fixed;
+  left: 0;
+  top: 0;
+}
+
+#tools{
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100px;
+  background-color: rgba(255,255,255,0.5);
+}
+#toolButtons{
+  position: relative;
+  width: 100%;
+  top: 0;
+}
+.buttons{
+  display: inline-block;
+  width:19%;
+  height: 30px;
+  background-color: rgba(255,255,255,0.5);
+}
+
+#eraser{
+  position: absolute;
+  display: inline-block;
+  background: #fff;
+  bottom: 15px;
+  right: 20px;
+}
+#eraser.active{
+  background: #000;
+  color:#fff;
+}
+#brushSize{
+  position: absolute;
+  display: inline-block;
+  bottom: 15px;
+  left: 10px;
+  width: 70%;
+
+}
+#hue{
+  position: absolute;
+  display: inline-block;
+  top: 35px;
+  left: 10px;
+  width: 90%;
+}
+#previewSlider{
+  position: absolute;
+  width:15px;
+  height: 15px;
+  border-radius: 50%;
+  bottom:15px;
+  right: 80px;
+  background: hsl(20, 100%, 50%);
+}
+#buttonSwitcher:not(.hair) #hairButtons,
+#buttonSwitcher:not(.hats) #hatsButtons,
+#buttonSwitcher:not(.dress) #dressButtons,
+#buttonSwitcher:not(.face) #faceButtons,
+#buttonSwitcher:not(.access) #accessButtons{
+  display: none;
+}
+
+#tools:not(.crop) #crop,
+#tools:not(.stamp) #stamps,
+#tools:not(.stampAdjust) #stampAdjust,
+#tools:not(.draw) #draw{
+  display: none;
+}
+
+#hairButtons, #hatsButtons, #dressButtons, #faceButtons, #accessButtons{
+  height: 90px;
+  overflow:auto;
+  -webkit-overflow-scrolling: touch;
+  white-space: nowrap;
+}
+#buttonSwitcher img {
+  max-width: 12%;
+  display:inline;
+  margin-top: 5px;
+  margin-left: 5px;
+}
+
+#stampCategories{
+  position: absolute;
+  width: 100%;
+  bottom: 0;   
+}
+
+#stampContainer img{
+  position: absolute;
+  top: 15%;
+  left: 25%;
+}
+
+#cropDone {
+  position: absolute;
+  display: inline-block;
+  background: #fff;
+  bottom: 15px;
+  right: 20px;
+}
+
+#cropOverlay{
+  background-image: url("../img/cropOverlay.png");
+  background-size: cover;
+  background-position: center top;
+  overflow: hidden;
+  position: fixed;
+}
+#cropOverlay:not(.active){
+  display:none;
+}
+#cropShape{
+  position: fixed;
+}
+
+#cropShape:not(.active){
+  display: none;
+}
+
