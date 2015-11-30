@@ -17,6 +17,11 @@
   <div id="stampContainer"></div>
   <canvas id="canvas"></canvas>
   
+  <div id="decorateNav">
+    <div id="uploadBack"> Back </div>
+    <div id="decorateDone"> Done </div>
+  </div>
+  
   <div id="tools">
     <div id="toolButtons">
       <div class = "buttons" id="cropButton">Crop</div>
@@ -77,6 +82,8 @@
      </div>
     
   </div>
+  
+  <canvas id="savePhoto"></canvas>
 </div>  
 
 <script src="js/jquery-2.1.4.min.js"></script>
@@ -129,7 +136,7 @@
 //CROP
   var cropShape = new Image();
   cropShape.src = "img/cropSourceAtop.png";
-  
+  //COPY FOR DECORATEBACK BUTTON
   var startRotation = 0;
   var rotation = 0;
   var startScale = 1;
@@ -139,6 +146,7 @@
   var x = 0;
   var y = 0;
   function cropHammer(){
+    var $canvasPhoto = $(canvasPhoto);
     var $crop = $("#cropOverlay");
     $crop.hammer();
     $crop.data("hammer").get("rotate").set({enable:true});
@@ -150,7 +158,7 @@
       x = startX + e.gesture.deltaX;
       y = startY + e.gesture.deltaY;
 
-      $("#photo").css({
+      $canvasPhoto.css({
          "transform": "translate("+x+"px,"+y+"px) rotate("+rotation+"deg) scale("+scale+","+scale+")",
           "-webkit-transform": "translate("+x+"px,"+y+"px) rotate("+rotation+"deg) scale("+scale+","+scale+")"
       });
@@ -165,7 +173,7 @@
         x = startX + e.gesture.deltaX;
         y = startY + e.gesture.deltaY;
 
-        $("#photo").css({
+        $canvasPhoto.css({
           "transform": "translate("+x+"px,"+y+"px) rotate("+startRotation+"deg) scale("+startScale+","+startScale+")",
           "-webkit-transform": "translate("+x+"px,"+y+"px) rotate("+startRotation+"deg) scale("+startScale+","+startScale+")"  
         });
@@ -176,26 +184,17 @@
   });
   }
   
+  var canvasCrop = document.getElementById('cropShape'),
+      contextCrop = canvasCrop.getContext('2d');
+  
   $("#cropDone").click(function(){
     $("#cropShape").addClass('active');
-    
-    var canvasCrop = document.getElementById('cropShape'),
-        contextCrop = canvasCrop.getContext('2d');
     canvasCrop.width = canvas.width;
     canvasCrop.height = canvas.height;
     var cropShapeScale = canvasCrop.height/cropShape.height;
-    var cropShapeX;
     
-    contextCrop.save();    
-    var x = (canvasCrop.width/2 - (canvasPhoto.width*startScale)/2) + startX;
-    var y = (canvasCrop.height/2 - (canvasPhoto.height*startScale)/2) + startY;
-    contextCrop.translate(x, y);
-    contextCrop.scale(startScale, startScale);
-    contextCrop.translate(canvasPhoto.width/2, canvasPhoto.height/2);
-    contextCrop.rotate(startRotation*Math.PI/180);
-    contextCrop.translate(-canvasPhoto.width/2, -canvasPhoto.height/2);
-    contextCrop.drawImage(canvasPhoto,0,0);
-    contextCrop.restore();
+    canvasTransforms(canvasCrop, contextCrop, canvasPhoto, startScale, startRotation, startX, startY);
+    
     contextCrop.globalCompositeOperation="destination-in";
     contextCrop.drawImage(cropShape,((canvasCrop.width/2)-((cropShape.width*cropShapeScale)/2)), 0, (cropShape.width*cropShapeScale), canvasCrop.height);
     
@@ -203,12 +202,26 @@
     $("#photo").css("display", "none");
   });
   
+  function canvasTransforms (canvas, canvasContext, object, startScale, startRotation, startX, startY){
+      canvasContext.save();    
+      var x = (canvas.width/2 - (object.width*startScale)/2) + startX;
+      var y = (canvas.height/2 - (object.height*startScale)/2) + startY;
+      canvasContext.translate(x, y);
+      canvasContext.scale(startScale, startScale);
+      canvasContext.translate(object.width/2, object.height/2);
+      canvasContext.rotate(startRotation*Math.PI/180);
+      canvasContext.translate(-object.width/2, -object.height/2);
+      canvasContext.drawImage(object,0,0);
+      canvasContext.restore();
+    }
+  
 //STAMP BUTTONS  
   $("#stampCategories .buttons").click(function(){
     var className = $(this).data('set-class');
     $("#buttonSwitcher").removeClass().addClass(className);
   });
   
+  var stamps = [];
   stamp();
   
 //INSERT PHOTO & CREATE CANVAS CALLED PHOTO
@@ -226,6 +239,7 @@
           function (photo){
             $(photo).appendTo("#photo");
             canvasPhoto = photo;
+            cropHammer();
           },
           {orientation: metaData.exif && metaData.exif.get('Orientation'), 
            maxWidth: canvas.width, 
@@ -245,7 +259,58 @@
       width: canvas.width
     }).insertAfter("#photo");
     $("#cropOverlay").addClass("active");
-    cropHammer();
+    
   });
+  
+  $("#uploadBack").click(function(){
+    document.body.className="uploadScreen";
+    $("#photo").empty();
+    $("#cropOverlay").remove();
+    $("#cropShape").removeClass('active');
+    $("#photo").css("display", "");
+    //RESET PHOTO TRANSFORMS
+    startRotation = 0;
+    rotation = 0;
+    startScale = 1;
+    scale = 0;
+    startX = 0;
+    startY = 0;
+    x = 0;
+    y = 0;
+    //CLEAR DRAWING
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    //CLEAR STAMPS
+    $("#stampContainer").empty();
+    stamps = [];
+  });
+  $("#decorateDone").click(function(){
+    console.log("done");
+    
+    $("#savePhoto").addClass('active');
+    
+    var canvasSave = document.getElementById('savePhoto'),
+        contextSave = canvasSave.getContext('2d');
+    canvasSave.width = canvas.width;
+    canvasSave.height = canvas.height;
+    //MAKE WHITE BACKGROUND
+    contextSave.rect(0,0,canvasSave.width, canvasSave.height);
+    contextSave.fillStyle='red';
+    contextSave.fill();
+    
+    //COPY CROPPED PHOTO
+    contextSave.drawImage(canvasCrop,0,0);
+    //COPY STAMPS
+    
+    //get each $stamp file src & transform
+    for (i=0; i < stamps.length; ++i ){
+     var transform = stamps[i].data("transform");
+      
+      canvasTransforms(canvasSave, contextSave, stamps[i][0], transform.scale, transform.rotation, transform.x, transform.y);
+    };
 
+    
+    //COPY DRAWING
+    contextSave.drawImage(canvas,0,0);
+  });
+                         
 </script>

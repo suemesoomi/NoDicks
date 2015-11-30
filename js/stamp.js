@@ -1,6 +1,7 @@
+//var stamps = [];
 function stamp(){
   //CREATE STAMPS
-  var stamps = [];
+  
   var $stampContainer = $("#stampContainer");
   var $currentStamp;
   
@@ -45,6 +46,13 @@ function stamp(){
       startScale = scale;
       startX = x;
       startY = y;
+      
+      $stamp.data("transform", {
+        rotation: startRotation,
+        scale: startScale,
+        x: startX,
+        y: startY
+      });
     });
     
     
@@ -59,8 +67,15 @@ function stamp(){
       });
     });
     $stamp.bind("panend", function(e){
-      startX = startX+e.gesture.deltaX;
-      startY = startY+e.gesture.deltaY;
+      startX = x;
+      startY = y;
+      
+      $stamp.data("transform", {
+        rotation: startRotation,
+        scale: startScale,
+        x: startX,
+        y: startY
+      });
     });
   });  
 
