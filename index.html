@@ -19,7 +19,7 @@
   
   <div id="decorateNav">
     <div id="uploadBack"> Back </div>
-    <div id="decorateDone"> Done </div>
+    <div id="decorateDone"> Save </div>
   </div>
   
   <div id="tools">
@@ -45,10 +45,42 @@
         <div id="hairButtons"> 
           <img src="img/hair_60-black.png" class="hairButtons"/>
           <img src="img/hair_beehive-black.png" class="hairButtons"/>
+          <img src="img/hair_bowl-black.png" class="hairButtons"/>
+          <img src="img/hair_braids-black.png" class="hairButtons"/>
+          <img src="img/hair_combover-black.png" class="hairButtons"/>
+          <img src="img/hair_dreads-black.png" class="hairButtons"/>
+          <img src="img/hair_flip-black.png" class="hairButtons"/>
+          <img src="img/hair_fro-black.png" class="hairButtons"/>
+          <img src="img/hair_mohawk-black.png" class="hairButtons"/>
+          <img src="img/hair_pigtail-black.png" class="hairButtons"/>
+          <img src="img/hair_pony-black.png" class="hairButtons"/>
+          <img src="img/hair_wolverine-black.png" class="hairButtons"/>
+          <img src="img/hair_60-blonde.png" class="hairButtons"/>
+          <img src="img/hair_beehive-blonde.png" class="hairButtons"/>
+          <img src="img/hair_bowl-blonde.png" class="hairButtons"/>
+          <img src="img/hair_braids-blonde.png" class="hairButtons"/>
+          <img src="img/hair_combover-blonde.png" class="hairButtons"/>
+          <img src="img/hair_dreads-blonde.png" class="hairButtons"/>
+          <img src="img/hair_flip-blonde.png" class="hairButtons"/>
+          <img src="img/hair_fro-blonde.png" class="hairButtons"/>
+          <img src="img/hair_mohawk-blonde.png" class="hairButtons"/>
+          <img src="img/hair_pigtail-blonde.png" class="hairButtons"/>
+          <img src="img/hair_pony-blonde.png" class="hairButtons"/>
+          <img src="img/hair_wolverine-blonde.png" class="hairButtons"/>
         </div>     
         <div id="hatsButtons"> 
           <img src="img/hat_sun.png" class="hatButtons" id="hatSun_Button"/>
           <img src="img/hat_catears.png" class="hatButtons" id="hatCat_Button"/>
+          <img src="img/hat_cowboy.png" class="hatButtons" id="hatCat_Button"/>
+          <img src="img/hat_fairy.png" class="hatButtons" id="hatCat_Button"/>
+          <img src="img/hat_madeline.png" class="hatButtons" id="hatCat_Button"/>
+          <img src="img/hat_party.png" class="hatButtons" id="hatCat_Button"/>
+          <img src="img/hat_pirate.png" class="hatButtons" id="hatCat_Button"/>
+          <img src="img/hat_sun.png" class="hatButtons" id="hatCat_Button"/>
+          <img src="img/hat_tophat.png" class="hatButtons" id="hatCat_Button"/>
+          <img src="img/hat_toque.png" class="hatButtons" id="hatCat_Button"/>
+          <img src="img/hat_unicorn.png" class="hatButtons" id="hatCat_Button"/>
+          <img src="img/hat_winter.png" class="hatButtons" id="hatCat_Button"/>
         </div>
         <div id="dressButtons" >
           <img src="img/dress_coat.png" class="dressButtons" id="dressCoat_Button"/>
@@ -193,7 +225,16 @@
     canvasCrop.height = canvas.height;
     var cropShapeScale = canvasCrop.height/cropShape.height;
     
-    canvasTransforms(canvasCrop, contextCrop, canvasPhoto, startScale, startRotation, startX, startY);
+    contextCrop.save();    
+    var x = (canvasCrop.width/2 - (canvasPhoto.width*startScale)/2) + startX;
+    var y = (canvasCrop.height/2 - (canvasPhoto.height*startScale)/2) + startY;
+    contextCrop.translate(x, y);
+    contextCrop.scale(startScale, startScale);
+    contextCrop.translate(canvasPhoto.width/2, canvasPhoto.height/2);
+    contextCrop.rotate(startRotation*Math.PI/180);
+    contextCrop.translate(-canvasPhoto.width/2, -canvasPhoto.height/2);
+    contextCrop.drawImage(canvasPhoto,0,0);
+    contextCrop.restore();
     
     contextCrop.globalCompositeOperation="destination-in";
     contextCrop.drawImage(cropShape,((canvasCrop.width/2)-((cropShape.width*cropShapeScale)/2)), 0, (cropShape.width*cropShapeScale), canvasCrop.height);
@@ -202,18 +243,7 @@
     $("#photo").css("display", "none");
   });
   
-  function canvasTransforms (canvas, canvasContext, object, startScale, startRotation, startX, startY){
-      canvasContext.save();    
-      var x = (canvas.width/2 - (object.width*startScale)/2) + startX;
-      var y = (canvas.height/2 - (object.height*startScale)/2) + startY;
-      canvasContext.translate(x, y);
-      canvasContext.scale(startScale, startScale);
-      canvasContext.translate(object.width/2, object.height/2);
-      canvasContext.rotate(startRotation*Math.PI/180);
-      canvasContext.translate(-object.width/2, -object.height/2);
-      canvasContext.drawImage(object,0,0);
-      canvasContext.restore();
-    }
+  
   
 //STAMP BUTTONS  
   $("#stampCategories .buttons").click(function(){
@@ -294,7 +324,7 @@
     canvasSave.height = canvas.height;
     //MAKE WHITE BACKGROUND
     contextSave.rect(0,0,canvasSave.width, canvasSave.height);
-    contextSave.fillStyle='red';
+    contextSave.fillStyle='DarkTurquoise';
     contextSave.fill();
     
     //COPY CROPPED PHOTO
@@ -304,8 +334,23 @@
     //get each $stamp file src & transform
     for (i=0; i < stamps.length; ++i ){
      var transform = stamps[i].data("transform");
-      
-      canvasTransforms(canvasSave, contextSave, stamps[i][0], transform.scale, transform.rotation, transform.x, transform.y);
+     
+    contextSave.save();    
+     
+    var startX = canvasSave.width*0.25;
+    var startY= canvasSave.height*0.15;
+
+    var x = (startX + (stamps[i][0].width/2 -(stamps[i][0].width*transform.scale)/2)) + transform.x;
+    var y = (startY +(stamps[i][0].height/2 -(stamps[i][0].height*transform.scale)/2)) + transform.y;
+    
+    contextSave.translate(x, y);
+    contextSave.scale(transform.scale, transform.scale);
+    contextSave.translate(stamps[i][0].width/2, stamps[i][0].height/2);
+    contextSave.rotate(transform.rotation*Math.PI/180);
+    contextSave.translate(-(stamps[i][0].width/2), -(stamps[i][0].height/2));
+    contextSave.drawImage(stamps[i][0],0,0);
+    contextSave.restore();
+    
     };
 
     
