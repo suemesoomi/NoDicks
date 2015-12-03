@@ -222,6 +222,7 @@ body:not(.decorateScreen) #decorateScreen{
   top:50%;
   left:40%;
   height:50px;
+  width: 70px;
 }
 
 #header {
@@ -236,12 +237,12 @@ body:not(.decorateScreen) #decorateScreen{
   display: block;
   margin-left: auto;
   margin-right: auto;
-  margin-top: 20px;
+  margin-top: 10px;
 }
 #header p{
   display: block;
   padding-left: 5%;
-  padding-top:20px;
+  padding-bottom:5px;
 }
 #uploadBG{
   position: absolute;

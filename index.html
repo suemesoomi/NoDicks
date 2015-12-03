@@ -347,6 +347,7 @@
     $("#cropOverlay").remove();
     $("#cropShape").removeClass("active");
     $("#photo").addClass("active");
+    
     //RESET PHOTO TRANSFORMS
     startRotation = 0;
     rotation = 0;
@@ -362,8 +363,7 @@
     $("#stampContainer").empty();
     stamps = [];
   });
-  $("#decorateDone").click(function(){
-    console.log("done");
+  $("#decorateDone").click(function(){   
     
     $("#savePhoto").addClass('active');
     $("#saveImg").addClass('active');
@@ -375,7 +375,7 @@
     contextSave.rect(0,0,canvasSave.width, canvasSave.height);
     contextSave.fillStyle='white';
     contextSave.fill();
-    
+
     //COPY CROPPED PHOTO
     contextSave.drawImage(canvasCrop,0,0);
     //COPY STAMPS
@@ -410,8 +410,9 @@
 //     window.open(dataURL, '_blank');
     document.getElementById("saveImg").src = dataURL;
     
-    //ALERT FOR SAVE
+        //ALERT FOR SAVE
     alert("Press and hold on your photo to save!");
+    
 
   });
   
