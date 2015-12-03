@@ -6,6 +6,7 @@ body{
   position:relative;
   height: 100%;
   overflow:hidden;
+  color: white;
 }
 body:not(.uploadScreen) #uploadScreen{
   display: none;
@@ -18,6 +19,9 @@ body:not(.decorateScreen) #decorateScreen{
   left: 0;
   top: 0;
 }
+#photo:not(.active){
+  display:none;
+}
 #canvas{
   position: fixed;
   left: 0;
@@ -29,7 +33,7 @@ body:not(.decorateScreen) #decorateScreen{
   left: 0;
   width: 100%;
   height: 30px;
-  background-color: rgba(255,255,255,0.5);
+  background-color: rgba(0,0,0,0.5);
 }
 #decorateDone {
   position: absolute;
@@ -51,8 +55,20 @@ body:not(.decorateScreen) #decorateScreen{
   bottom: 0;
   left: 0;
   width: 100%;
+  background-color: rgba(0,0,0,0.1);
+}
+
+#tools.draw{
+  height: 135px;
+}
+#tools.stamp{
+  height: 170px;
+}
+#tools.crop{
+  height: 49px;
+}
+#tools.stampAdjust{
   height: 100px;
-  background-color: rgba(255,255,255,0.5);
 }
 #toolButtons{
   position: relative;
@@ -63,7 +79,14 @@ body:not(.decorateScreen) #decorateScreen{
   display: inline-block;
   width:19%;
   height: 30px;
-  background-color: rgba(255,255,255,0.5);
+  background-color: rgba(0,0,0,0.5);
+}
+
+.navButtons{
+  display: inline-block;
+  width:32.5%;
+  height: 49px;
+  background-color: rgba(0,0,0,0.5);
 }
 
 #eraser{
@@ -72,6 +95,7 @@ body:not(.decorateScreen) #decorateScreen{
   background: #fff;
   bottom: 15px;
   right: 20px;
+  color: black;
 }
 #eraser.active{
   background: #000;
@@ -88,7 +112,7 @@ body:not(.decorateScreen) #decorateScreen{
 #hue{
   position: absolute;
   display: inline-block;
-  top: 35px;
+  bottom: 45px;
   left: 10px;
   width: 90%;
 }

@@ -80,7 +80,6 @@ function stamp(){
   });  
 
   function stampSelected($stamp){
-    $("#tools").css("height","100px");
     $("#tools").removeClass().addClass("stampAdjust");
     $currentStamp = $stamp;    
   };

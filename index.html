@@ -24,15 +24,13 @@
   
   <div id="tools">
     <div id="toolButtons">
-      <div class = "buttons" id="cropButton">Crop</div>
-      <div class = "buttons" id="adjustButton">Adjust</div>
-      <div class = "buttons" id="stampButton">Stamp</div>
-      <div class = "buttons" id="drawButton">Draw</div>
-      <div class = "buttons" id="bgButton">Bg</div>
+      <div class = "navButtons" id="cropButton">Crop</div>
+<!--      <div class = "buttons" id="adjustButton">Adjust</div>-->
+      <div class = "navButtons" id="stampButton">Stamp</div>
+      <div class = "navButtons" id="drawButton">Draw</div>
+<!--      <div class = "buttons" id="bgButton">Bg</div>-->
     </div>
-    <div id="crop"> 
-      <div id="cropDone"> Done </div>
-    </div>
+    <div id="crop">  </div>
     <div id="stamps">
       <div id="stampCategories">
         <div class = "buttons" data-set-class="hair">Hair</div>
@@ -116,6 +114,7 @@
   </div>
   
   <canvas id="savePhoto"></canvas>
+  <img id="saveImg" alt="dick pic REVISED">
 </div>  
 
 <script src="js/jquery-2.1.4.min.js"></script>
@@ -141,30 +140,7 @@
   draw();
   
   Origami.fastclick(document.body);
-  
-//TOOL BUTTONS  
-  $("#drawButton").click(function(){
-    $("#canvas").css("pointer-events","");
-    $("#tools").removeClass().addClass("draw");
-    $("#cropOverlay").removeClass("active");
-    $("#draw").addClass('active');
-    $("#tools").css("height","100px");
-  });
-  $("#stampButton").click(function(){
-    $("#canvas").css("pointer-events","none");
-    $("#draw").removeClass('active');
-    $("#cropOverlay").removeClass("active");
-    $("#tools").removeClass().addClass("stamp");
-    $("#tools").css("height","150px");  
-  });
-  $("#cropButton").click(function(){ 
-    $("#canvas").css("pointer-events","none");
-    $("#draw").removeClass('active');
-    $("#tools").removeClass().addClass("crop");
-    $("#cropOverlay").addClass("active");
-    $("#tools").css("height","100px");
-    cropHammer();
-  });
+
 //CROP
   var cropShape = new Image();
   cropShape.src = "img/cropSourceAtop.png";
@@ -219,31 +195,64 @@
   var canvasCrop = document.getElementById('cropShape'),
       contextCrop = canvasCrop.getContext('2d');
   
-  $("#cropDone").click(function(){
-    $("#cropShape").addClass('active');
-    canvasCrop.width = canvas.width;
-    canvasCrop.height = canvas.height;
-    var cropShapeScale = canvasCrop.height/cropShape.height;
-    
-    contextCrop.save();    
-    var x = (canvasCrop.width/2 - (canvasPhoto.width*startScale)/2) + startX;
-    var y = (canvasCrop.height/2 - (canvasPhoto.height*startScale)/2) + startY;
-    contextCrop.translate(x, y);
-    contextCrop.scale(startScale, startScale);
-    contextCrop.translate(canvasPhoto.width/2, canvasPhoto.height/2);
-    contextCrop.rotate(startRotation*Math.PI/180);
-    contextCrop.translate(-canvasPhoto.width/2, -canvasPhoto.height/2);
-    contextCrop.drawImage(canvasPhoto,0,0);
-    contextCrop.restore();
-    
-    contextCrop.globalCompositeOperation="destination-in";
-    contextCrop.drawImage(cropShape,((canvasCrop.width/2)-((cropShape.width*cropShapeScale)/2)), 0, (cropShape.width*cropShapeScale), canvasCrop.height);
-    
-    $("#stampButton").click();
-    $("#photo").css("display", "none");
+  
+  $("#stampButton, #drawButton").click(function(){
+    if($("#tools").hasClass("crop")){
+      $("#cropShape").addClass('active');
+      canvasCrop.width = canvas.width;
+      canvasCrop.height = canvas.height;
+      var cropShapeScale = canvasCrop.height/cropShape.height;
+
+      contextCrop.save();    
+      var x = (canvasCrop.width/2 - (canvasPhoto.width*startScale)/2) + startX;
+      var y = (canvasCrop.height/2 - (canvasPhoto.height*startScale)/2) + startY;
+      contextCrop.translate(x, y);
+      contextCrop.scale(startScale, startScale);
+      contextCrop.translate(canvasPhoto.width/2, canvasPhoto.height/2);
+      contextCrop.rotate(startRotation*Math.PI/180);
+      contextCrop.translate(-canvasPhoto.width/2, -canvasPhoto.height/2);
+      contextCrop.drawImage(canvasPhoto,0,0);
+      contextCrop.restore();
+
+      contextCrop.globalCompositeOperation="destination-in";
+      contextCrop.drawImage(cropShape,((canvasCrop.width/2)-((cropShape.width*cropShapeScale)/2)), 0, (cropShape.width*cropShapeScale), canvasCrop.height);
+
+      $("#photo").removeClass();
+      $("#stampContainer").css("display","");
+    }
   });
   
-  
+  //TOOL BUTTONS  
+  $("#drawButton").click(function(){
+    $("#canvas").css("pointer-events","");
+    $("#tools").removeClass().addClass("draw");
+    $("#cropOverlay").removeClass("active");
+    $("#draw").addClass('active');
+//    $("#tools").css("height","150px");
+  });
+  $("#stampButton").click(function(){
+    $("#canvas").css("pointer-events","none");
+    $("#draw").removeClass('active');
+    $("#cropOverlay").removeClass("active");
+    $("#tools").removeClass().addClass("stamp");
+//    $("#tools").css("height","150px");  
+  });
+  $("#cropButton").click(function(){ 
+    if($("#tools").hasClass("draw") || $("#tools").hasClass("stamp") || $("#tools").hasClass("stampAdjust")){
+      $("#photo").addClass("active");
+      $("#cropShape").removeClass('active');
+      contextCrop.clearRect(0,0,canvas.width, canvas.height);
+      $("#stampContainer").css("display","none");
+    }
+    
+    $("#canvas").css("pointer-events","none");
+    $("#draw").removeClass('active');
+    $("#tools").removeClass().addClass("crop");
+    $("#cropOverlay").addClass("active");
+//    $("#tools").css("height","49px");
+    cropHammer();
+  });
+    
   
 //STAMP BUTTONS  
   $("#stampCategories .buttons").click(function(){
@@ -267,6 +276,7 @@
         loadImage(
           $photoInput[0].files[0],
           function (photo){
+            $("#photo").addClass("active");
             $(photo).appendTo("#photo");
             canvasPhoto = photo;
             cropHammer();
@@ -281,7 +291,7 @@
       }
     );
     $("#tools").removeClass().addClass("crop");
-    $("#buttonSwitcher").addClass("hair");
+    $("#buttonSwitcher").removeClass().addClass("hair");
     $("#canvas").css("pointer-events","none");
     var $cropOverlay = $('<div>', {
       id: "cropOverlay",
@@ -296,8 +306,8 @@
     document.body.className="uploadScreen";
     $("#photo").empty();
     $("#cropOverlay").remove();
-    $("#cropShape").removeClass('active');
-    $("#photo").css("display", "");
+    $("#cropShape").removeClass("active");
+    $("#photo").addClass("active");
     //RESET PHOTO TRANSFORMS
     startRotation = 0;
     rotation = 0;
@@ -352,10 +362,15 @@
     contextSave.restore();
     
     };
-
-    
+  
     //COPY DRAWING
     contextSave.drawImage(canvas,0,0);
+    
+    //MAKE INTO PNG
+    var dataURL = canvasSave.toDataURL();
+     window.open(dataURL, '_blank');
+    document.getElementById("saveImg").src = dataURL;
+
   });
                          
 </script>
