@@ -3,11 +3,16 @@
 
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name = "viewport" content = "width = device-width, minimum-scale = 1.0, maximum-scale = 1.0, user-scalable = no">
+<link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300' rel='stylesheet' type='text/css'>
 <link rel="stylesheet" type="text/css" href="css/decorate.css"/>
 
 
 <div id="uploadScreen">
+  <img src = "img/upload_bg.png" id="uploadBG">
+  <div id="header"> <img src="img/NoDicksLogo.png"> <p>Received a dick pic without Consent?<br>Was it gross?<br>Then make it un-gross!<br>The power is in your hands.</p> </div>
+  <img id="photoInputButton" src="img/uploadButton.png">
   <input id="photoInput" type="file" accept="image/*">
+  
 </div>
 
 <div id="decorateScreen">
@@ -95,8 +100,37 @@
           <img src="img/dress_tie.png" class="dressButtons"/>
           <img src="img/dress_tshirt.png" class="dressButtons"/>
         </div>
-        <div id="faceButtons"> </div>
-        <div id="accessButtons"> </div>
+        <div id="faceButtons"> 
+          <img src="img/face_cute-happy.png" class="faceButtons"/>
+          <img src="img/face_cute-sad.png" class="faceButtons"/>
+          <img src="img/face_cute-domo.png" class="faceButtons"/>
+          <img src="img/face_content.png" class="faceButtons"/>
+          <img src="img/face_err.png" class="faceButtons"/>
+          <img src="img/face_frown.png" class="faceButtons"/>
+          <img src="img/face_happy.png" class="faceButtons"/>
+          <img src="img/face_noo.png" class="faceButtons"/>
+          <img src="img/face_smile.png" class="faceButtons"/>
+          <img src="img/face_squiggle.png" class="faceButtons"/>
+          <img src="img/face_vampy.png" class="faceButtons"/>
+        </div>
+        <div id="accessButtons"> 
+          <img src="img/access_bowtie.png" class="accessButtons"/>
+          <img src="img/access_briefcase.png" class="accessButtons"/>
+          <img src="img/access_fanny.png" class="accessButtons"/>
+          <img src="img/access_glass.png" class="accessButtons"/>
+          <img src="img/access_heartGlass.png" class="accessButtons"/>
+          <img src="img/access_jizz.png" class="accessButtons"/>
+          <img src="img/access_lightning.png" class="accessButtons"/>
+          <img src="img/access_mono.png" class="accessButtons"/>
+          <img src="img/access_no.png" class="accessButtons"/>
+          <img src="img/access_no1.png" class="accessButtons"/>
+          <img src="img/access_pearls.png" class="accessButtons"/>
+          <img src="img/access_piercing.png" class="accessButtons"/>
+          <img src="img/access_pubes.png" class="accessButtons"/>
+          <img src="img/access_purse.png" class="accessButtons"/>
+          <img src="img/access_rainbow.png" class="accessButtons"/>
+          <img src="img/access_tatt.png" class="accessButtons"/>
+        </div>
       </div>
     </div>
     <div id="stampAdjust">
@@ -114,7 +148,7 @@
   </div>
   
   <canvas id="savePhoto"></canvas>
-  <img id="saveImg" alt="dick pic REVISED">
+  <img id="saveImg">
 </div>  
 
 <script src="js/jquery-2.1.4.min.js"></script>
@@ -140,6 +174,11 @@
   draw();
   
   Origami.fastclick(document.body);
+  
+  //INPUT
+  $("#photoInputButton").click(function(){
+    $("phtotoInput").click();
+  });
 
 //CROP
   var cropShape = new Image();
@@ -327,14 +366,14 @@
     console.log("done");
     
     $("#savePhoto").addClass('active');
-    
+    $("#saveImg").addClass('active');
     var canvasSave = document.getElementById('savePhoto'),
         contextSave = canvasSave.getContext('2d');
     canvasSave.width = canvas.width;
     canvasSave.height = canvas.height;
     //MAKE WHITE BACKGROUND
     contextSave.rect(0,0,canvasSave.width, canvasSave.height);
-    contextSave.fillStyle='DarkTurquoise';
+    contextSave.fillStyle='white';
     contextSave.fill();
     
     //COPY CROPPED PHOTO
@@ -368,9 +407,14 @@
     
     //MAKE INTO PNG
     var dataURL = canvasSave.toDataURL();
-     window.open(dataURL, '_blank');
+//     window.open(dataURL, '_blank');
     document.getElementById("saveImg").src = dataURL;
+    
+    //ALERT FOR SAVE
+    alert("Press and hold on your photo to save!");
 
   });
+  
+  
                          
 </script>

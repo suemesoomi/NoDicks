@@ -6,10 +6,14 @@ body{
   position:relative;
   height: 100%;
   overflow:hidden;
+  font-family: 'Source Sans Pro', sans-serif;
   color: white;
 }
 body:not(.uploadScreen) #uploadScreen{
   display: none;
+}
+#uploadScreen{
+  
 }
 body:not(.decorateScreen) #decorateScreen{
   display: none;
@@ -148,8 +152,16 @@ body:not(.decorateScreen) #decorateScreen{
 }
 #buttonSwitcher img {
   max-width: 12%;
+  max-height: 70%;
   display:inline;
   margin-top: 5px;
+  margin-left: 5px;
+}
+
+#faceButtons img {
+  max-width: 40%;
+  display:inline;
+  margin-top: 15px;
   margin-left: 5px;
 }
 
@@ -197,4 +209,48 @@ body:not(.decorateScreen) #decorateScreen{
 #savePhoto{
   position: fixed;
 }
+#saveImg:not(.active){
+  display: none;
+}
+#saveImg {
+  position: fixed;
+}
 
+#photoInput {
+  opacity:0;
+  position:absolute;
+  top:50%;
+  left:40%;
+  height:50px;
+}
+
+#header {
+  position: absolute;
+  background-color: #F73E26;
+  height:45%;
+  width:100%;
+  top:0;
+  font-size: 17px;
+}
+#header img{
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 20px;
+}
+#header p{
+  display: block;
+  padding-left: 5%;
+  padding-top:20px;
+}
+#uploadBG{
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+}
+
+#photoInputButton {
+  position:absolute;
+  top:50%;
+  left:40%;
+}
