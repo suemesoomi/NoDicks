@@ -29,21 +29,17 @@
   
   <div id="tools">
     <div id="toolButtons">
-      <div class = "navButtons" id="cropButton">Crop</div>
+      <div class = "navButtons buttons" id="cropButton"><img src="img/button_crop.png"><img src="img/button_crop_on.png" id="active">Crop</div>
 <!--      <div class = "buttons" id="adjustButton">Adjust</div>-->
-      <div class = "navButtons" id="stampButton">Stamp</div>
-      <div class = "navButtons" id="drawButton">Draw</div>
+      <div class = "navButtons buttons" id="stampButton"><img src="img/button_stamp.png"><img src="img/button_stamp_on.png" id="active">Stamp</div>
+      <div class = "navButtons buttons" id="drawButton"><img src="img/button_draw.png"><img src="img/button_draw_on.png" id="active">Draw</div>
 <!--      <div class = "buttons" id="bgButton">Bg</div>-->
     </div>
     <div id="crop">  </div>
+    <div id="stampAdjust">
+      <div id="delete">Delete</div>
+    </div>
     <div id="stamps">
-      <div id="stampCategories">
-        <div class = "buttons" data-set-class="hair">Hair</div>
-        <div class = "buttons" data-set-class="hats">Hats</div>
-        <div class = "buttons" data-set-class="dress">Dress</div>
-        <div class = "buttons" data-set-class="face">Face</div>
-        <div class = "buttons" data-set-class="access">Access</div>
-      </div>
       <div id="buttonSwitcher">
         <div id="hairButtons"> 
           <img src="img/hair_60-black.png" class="hairButtons"/>
@@ -131,16 +127,23 @@
           <img src="img/access_rainbow.png" class="accessButtons"/>
           <img src="img/access_tatt.png" class="accessButtons"/>
         </div>
+        <div id="myButtons"> 
+          <img src="img/myButton_1.png" class="myButtons"/>
+        </div>
       </div>
+      <div id="stampCategories">
+        <div class = "buttons" data-set-class="hair"><img src="img/button_hair.png"><img src="img/button_hair_on.png" id="active"> Hair</div>
+        <div class = "buttons" data-set-class="hats"><img src="img/button_hat.png"><img src="img/button_hat_on.png" id="active"> Hats</div>
+        <div class = "buttons" data-set-class="dress"><img src="img/button_dress.png"><img src="img/button_dress_on.png" id="active"> Dress</div>
+        <div class = "buttons" data-set-class="face"><img src="img/button_face.png"><img src="img/button_face_on.png" id="active"> Face</div>
+        <div class = "buttons" data-set-class="access"><img src="img/button_access.png"><img src="img/button_access_on.png" id="active">Access</div>
+        <div class = "buttons" data-set-class="my"><img src="img/button_my.png"><img src="img/button_my_on.png" id="active">Collected</div>
+      </div>  
     </div>
-    <div id="stampAdjust">
-      <div id="delete">Delete</div>
-    </div>
+    
     <div id="draw">
       <div id="eraser">Eraser</div>
-    <!--  <label for ="brushSize">Size</label>-->
       <input id="brushSize" type = "range" name ="brushSize" min="1" max="30" value ="15">
-    <!--  <label for ="hue">Hue</label>-->
       <input id="hue" type = "range" name ="hue" min="0" max="360" value ="20">
       <div id="previewSlider"></div>
      </div>
@@ -157,8 +160,7 @@
 <script src="js/jquery.hammer.js"></script>
 <script src="js/stamp.js"></script>
 <script src="js/draw.js"></script>
-<script src="js/fastclick.js"></script>  
-  
+<script src="js/fastclick.js"></script> 
   
 <script>
   
@@ -175,7 +177,7 @@
   
   Origami.fastclick(document.body);
   
-  //INPUT
+  //PHOT INPUT HACK
   $("#photoInputButton").click(function(){
     $("phtotoInput").click();
   });
@@ -263,18 +265,20 @@
   
   //TOOL BUTTONS  
   $("#drawButton").click(function(){
+    $(".navButtons").removeClass("active");
+    $(this).addClass("active");
+    $("#draw").addClass('active');
     $("#canvas").css("pointer-events","");
     $("#tools").removeClass().addClass("draw");
     $("#cropOverlay").removeClass("active");
-    $("#draw").addClass('active');
-//    $("#tools").css("height","150px");
   });
   $("#stampButton").click(function(){
+    $(".navButtons").removeClass("active");
+    $(this).addClass("active");
     $("#canvas").css("pointer-events","none");
-    $("#draw").removeClass('active');
     $("#cropOverlay").removeClass("active");
     $("#tools").removeClass().addClass("stamp");
-//    $("#tools").css("height","150px");  
+    $("#draw").removeClass('active');
   });
   $("#cropButton").click(function(){ 
     if($("#tools").hasClass("draw") || $("#tools").hasClass("stamp") || $("#tools").hasClass("stampAdjust")){
@@ -283,7 +287,8 @@
       contextCrop.clearRect(0,0,canvas.width, canvas.height);
       $("#stampContainer").css("display","none");
     }
-    
+    $(".navButtons").removeClass("active");
+    $(this).addClass("active");
     $("#canvas").css("pointer-events","none");
     $("#draw").removeClass('active');
     $("#tools").removeClass().addClass("crop");
@@ -296,6 +301,8 @@
 //STAMP BUTTONS  
   $("#stampCategories .buttons").click(function(){
     var className = $(this).data('set-class');
+    $("#stampCategories .buttons").removeClass("active");
+    $(this).addClass("active");
     $("#buttonSwitcher").removeClass().addClass(className);
   });
   
@@ -330,7 +337,8 @@
       }
     );
     $("#tools").removeClass().addClass("crop");
-    $("#buttonSwitcher").removeClass().addClass("hair");
+    $("#cropButton").addClass("active");
+    $("#stampCategories .buttons:first").click();
     $("#canvas").css("pointer-events","none");
     var $cropOverlay = $('<div>', {
       id: "cropOverlay",
@@ -340,13 +348,14 @@
     $("#cropOverlay").addClass("active");
     
   });
-  
+//BACK  
   $("#uploadBack").click(function(){
     document.body.className="uploadScreen";
     $("#photo").empty();
     $("#cropOverlay").remove();
     $("#cropShape").removeClass("active");
     $("#photo").addClass("active");
+    $(".navButtons").removeClass("active");
     
     //RESET PHOTO TRANSFORMS
     startRotation = 0;
@@ -363,6 +372,8 @@
     $("#stampContainer").empty();
     stamps = [];
   });
+  
+  //SAVE
   $("#decorateDone").click(function(){   
     
     $("#savePhoto").addClass('active');

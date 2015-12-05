@@ -7,14 +7,66 @@ body{
   height: 100%;
   overflow:hidden;
   font-family: 'Source Sans Pro', sans-serif;
-  color: white;
+  color: black;
+}
+.active{
+  color: #f73e26;
 }
 body:not(.uploadScreen) #uploadScreen{
   display: none;
 }
-#uploadScreen{
-  
+#savePhoto:not(.active){
+  display: none;
 }
+#savePhoto{
+  position: fixed;
+}
+#saveImg:not(.active){
+  display: none;
+}
+#saveImg {
+  position: fixed;
+}
+#photoInput {
+  opacity:0;
+  position:absolute;
+  top:50%;
+  left:40%;
+  height:50px;
+  width: 70px;
+}
+#photoInputButton {
+  position:absolute;
+  top:50%;
+  left:40%;
+  width:20%;
+  height:auto;
+}
+#header {
+  position: absolute;
+  background-color: #F73E26;
+  height:45%;
+  width:100%;
+  top:0;
+  font-size: 17px;
+}
+#header img{
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 10px;
+}
+#header p{
+  display: block;
+  padding-left: 5%;
+  padding-bottom:5px;
+}
+#uploadBG{
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+}
+
 body:not(.decorateScreen) #decorateScreen{
   display: none;
 }
@@ -36,8 +88,9 @@ body:not(.decorateScreen) #decorateScreen{
   top: 0;
   left: 0;
   width: 100%;
-  height: 30px;
-  background-color: rgba(0,0,0,0.5);
+  height: 44px;
+  background-color: rgba(239,238,244,0.6);
+  font-size: 17px;
 }
 #decorateDone {
   position: absolute;
@@ -48,25 +101,27 @@ body:not(.decorateScreen) #decorateScreen{
 }
 #uploadBack {
   position: absolute;
-  display: inline-block;
-  top: 5px;
-  left: 20px;
-  height: 20px;
-}
+    display: inline-block;
+    top: 5px;
+    left: 20px;
+    height: 20px;
+  }
 
 #tools{
   position: fixed;
+  width: 100%;
   bottom: 0;
   left: 0;
-  width: 100%;
-  background-color: rgba(0,0,0,0.1);
+  background-color: rgba(255,255,255,0.6);
+  text-align: center;
+  font-size: 11pt;
 }
 
 #tools.draw{
   height: 135px;
 }
 #tools.stamp{
-  height: 170px;
+  height: 183px;
 }
 #tools.crop{
   height: 49px;
@@ -76,64 +131,91 @@ body:not(.decorateScreen) #decorateScreen{
 }
 #toolButtons{
   position: relative;
+  display: block;
   width: 100%;
   top: 0;
+  background-color: rgba(239,238,244,0.6);
 }
 .buttons{
   display: inline-block;
-  width:19%;
-  height: 30px;
-  background-color: rgba(0,0,0,0.5);
+  width:15.5%;
+  height: 44px; 
+  bottom:0;
+  }
+
+.buttons img{
+  display:block;
+  height:20px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 1px;
+  margin-top: 5px;
+}
+
+.buttons:not(.active) #active{
+  display: none;
+}
+.buttons.active img:first-child{
+  display: none;
 }
 
 .navButtons{
-  display: inline-block;
   width:32.5%;
   height: 49px;
-  background-color: rgba(0,0,0,0.5);
 }
 
 #eraser{
   position: absolute;
   display: inline-block;
-  background: #fff;
+  background: #eee;
+  height: 25px;
+  width: 40px;
   bottom: 15px;
   right: 20px;
   color: black;
 }
 #eraser.active{
   background: #000;
-  color:#fff;
+  color: #fff;
 }
 #brushSize{
   position: absolute;
   display: inline-block;
   bottom: 15px;
-  left: 10px;
-  width: 70%;
+  left: 5%;
+  width: 60%;
 
 }
 #hue{
   position: absolute;
   display: inline-block;
-  bottom: 45px;
-  left: 10px;
-  width: 90%;
+  top: 65px;
+  left: 5%;
+  width: 80%;
+  height:10px;
 }
+input#hue[type=range] {
+  -webkit-appearance: none !important;
+  background-image: url("../img/hue.png");
+  background-size: cover;
+}
+
+
 #previewSlider{
   position: absolute;
   width:15px;
   height: 15px;
   border-radius: 50%;
   bottom:15px;
-  right: 80px;
+  right: 75px;
   background: hsl(20, 100%, 50%);
 }
 #buttonSwitcher:not(.hair) #hairButtons,
 #buttonSwitcher:not(.hats) #hatsButtons,
 #buttonSwitcher:not(.dress) #dressButtons,
 #buttonSwitcher:not(.face) #faceButtons,
-#buttonSwitcher:not(.access) #accessButtons{
+#buttonSwitcher:not(.access) #accessButtons,
+#buttonSwitcher:not(.my) #myButtons{
   display: none;
 }
 
@@ -144,7 +226,7 @@ body:not(.decorateScreen) #decorateScreen{
   display: none;
 }
 
-#hairButtons, #hatsButtons, #dressButtons, #faceButtons, #accessButtons{
+#hairButtons, #hatsButtons, #dressButtons, #faceButtons, #accessButtons, #myButtons{
   height: 90px;
   overflow:auto;
   -webkit-overflow-scrolling: touch;
@@ -166,15 +248,29 @@ body:not(.decorateScreen) #decorateScreen{
 }
 
 #stampCategories{
-  position: absolute;
+  position: relative;
   width: 100%;
-  bottom: 0;   
+  bottom: 0; 
+  background-color: rgba(239,238,244,0.6);
+  border-color: #ceced2;
+  border-width:1px;
+  overflow:auto;
+  -webkit-overflow-scrolling: touch;
+  white-space: nowrap;
 }
 
 #stampContainer img{
   position: absolute;
   top: 15%;
   left: 25%;
+}
+#buttonSwitcher {
+  position:relative;
+  display:block;
+}
+#stampAdjust{
+  position: relative;
+  display:block;
 }
 
 #cropDone {
@@ -203,55 +299,8 @@ body:not(.decorateScreen) #decorateScreen{
   display: none;
 }
 
-#savePhoto:not(.active){
-  display: none;
-}
-#savePhoto{
-  position: fixed;
-}
-#saveImg:not(.active){
-  display: none;
-}
-#saveImg {
-  position: fixed;
-}
 
-#photoInput {
-  opacity:0;
-  position:absolute;
-  top:50%;
-  left:40%;
-  height:50px;
-  width: 70px;
-}
 
-#header {
-  position: absolute;
-  background-color: #F73E26;
-  height:45%;
-  width:100%;
-  top:0;
-  font-size: 17px;
-}
-#header img{
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 10px;
-}
-#header p{
-  display: block;
-  padding-left: 5%;
-  padding-bottom:5px;
-}
-#uploadBG{
-  position: absolute;
-  width: 100%;
-  bottom: 0;
-}
 
-#photoInputButton {
-  position:absolute;
-  top:50%;
-  left:40%;
-}
+
+
