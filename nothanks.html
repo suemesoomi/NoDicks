@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<title>No Thanks</title>
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name = "viewport" content = "width = device-width, minimum-scale = 1.0, maximum-scale = 1.0, user-scalable = no">
+<link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,900' rel='stylesheet' type='text/css'>
+
+<style>
+  body:not(.questionScreen) #questionScreen,
+  body:not(.answerScreen) #answerScreen{
+    display: none;
+  }
+  body{
+    margin:0;
+    position:relative;
+    height: 100%;
+    overflow:hidden;
+    font-family: 'Source Sans Pro', sans-serif;
+    font-weight:600;
+    color: black;
+    font-size: 23pt;
+  }
+  #answer{
+    position:relative;
+    padding-top:20px; 
+    padding-bottom:-5px;
+    color: #f73e26;
+    font-size: 18pt;
+    border-bottom-style: solid;
+    border-bottom-color: black;
+    border-bottom-width: 5px;
+    width:90%;
+    height: 140px;
+  }
+  #next{
+    position: fixed;
+    bottom:100px;
+    left:50px;
+    width:120px;
+    height:60px;
+    background-color:#f73e26;
+    color:white;
+    font-size:34px;
+    font-weight:800;
+    padding-top:10px;
+    padding-left:15px;
+  }
+  #leftButton,
+  #rightButton{
+    position:fixed;
+    bottom: 270px;
+  }
+  
+  #answer p:not(.active){
+    display:none;
+  }
+  
+  p{
+    position:absolute;
+    bottom:0px;
+  }
+  .meme{
+    position:fixed;
+    left:5%;
+    top:10%;
+    width:90%;
+    height:auto;
+  }
+  #answerScreen img:not(.active){
+    display:none;
+  }
+</style>
+
+<div id="questionScreen">
+  <div style="padding-top:100px; padding-left:50px;">
+  <span style="font-weight:900; font-size: 30pt;">Hey Bro,</span><br>
+    Why did you send me <br>
+    that dick pic?
+    <img id="rightButton" style="right:10px;" src="img/rightArrow.png">
+    <img id="leftButton" style="left:10px;" src="img/leftArrow.png">
+    <div id="answer">
+      <p class="active">It&rsquo;s the only way I know <br>
+      how to communicate my  <br>
+      sexy intentions </p>
+  
+      <p>I thought you&rsquo;d like it</p>
+      
+      <p>Speaks for itself</p>
+      
+      <p>It&rsquo;s so magical, I must <br>
+      bestow it upon the world</p>
+      
+      <p>I thought it was sexy</p>
+  
+    </div>
+
+  </div> 
+
+  <div id="next">
+    NEXT >
+  </div>
+</div>
+<div id="answerScreen">
+  <img src="img/meme1.png" class="meme active">
+  <img src="img/meme2.png" class="meme">
+  <img src="img/meme3.png" class="meme">
+  <img src="img/meme4.png" class="meme">
+  <img src="img/meme5.png" class="meme">
+  <img src="img/meme6.png" class="meme">
+  <img src="img/meme7.png" class="meme">
+</div>
+
+<script src="js/jquery-2.1.4.min.js"></script>
+<script src="js/fastclick.js"></script> 
+
+<script>
+  Origami.fastclick(document.body);
+  document.body.className="questionScreen";   
+  
+  $("#rightButton").click(function(){ 
+    var $active= $("#answer p.active");
+    $active.removeClass("active");
+    
+    if($active.is(":last-child")){
+      $("#answer>:first-child").addClass("active");
+    }else{
+      $active.next().addClass("active");
+    }  
+  });
+  
+  $("#leftButton").click(function(){ 
+    var $active= $("#answer p.active");
+    $active.removeClass("active");
+    
+    if($active.is(":first-child")){
+      $("#answer>:last-child").addClass("active");
+    }else{
+      $active.prev().addClass("active");
+    }  
+  });
+  
+  $("#next").click(function(){
+    document.body.className="answerScreen";
+    var $img = $("#answerScreen>img");
+    $img.removeClass("active");
+    var random = Math.floor((Math.random() * $img.length));
+    $img.eq(random).addClass("active");
+  });
+</script>
