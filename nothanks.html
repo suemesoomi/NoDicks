@@ -16,7 +16,6 @@
     margin:0;
     position:relative;
     height: 100%;
-    overflow:hidden;
     font-family: 'Source Sans Pro', sans-serif;
     font-weight:600;
     color: black;
@@ -36,7 +35,7 @@
   }
   #next{
     position: fixed;
-    bottom:100px;
+    top: 440px;
     left:50px;
     width:120px;
     height:60px;
@@ -50,7 +49,7 @@
   #leftButton,
   #rightButton{
     position:fixed;
-    bottom: 270px;
+    top: 300px;
   }
   
   #answer p:not(.active){
@@ -62,11 +61,12 @@
     bottom:0px;
   }
   .meme{
-    position:fixed;
-    left:5%;
-    top:10%;
-    width:90%;
-    height:auto;
+    display:block;
+    margin-left:auto;
+    margin-right:auto;
+    margin-top:10%;
+    max-width:90%;
+    max-height:500px;
   }
   #answerScreen img:not(.active){
     display:none;
